@@ -6,11 +6,11 @@ import os
 import scipy.signal
 import uuid
 import warnings
-import xml.etree.ElementTree as ET
 
 from .pipesegment import PipeSegment, LoadSegment, MergeSegment
 from .image import Image
 from . import image
+import defusedxml.ElementTree
 
 
 class BandMath(PipeSegment):
@@ -612,7 +612,7 @@ class TerraSARXScaleFactor(PipeSegment):
         else:
             img = pin[1]
             info = pin[0]
-        root = ET.fromstring(info)
+        root = defusedxml.ElementTree.fromstring(info)
         scale_factor = float(list(root.iter('calFactor'))[0].text)
         return Image(math.sqrt(scale_factor) * img.data, img.name, img.metadata)
 
@@ -638,7 +638,7 @@ class TerraSARXGeorefToGCPs(PipeSegment):
         pout = Image(img.data, img.name, img.metadata.copy())
         # Set GCP values
         gcps = []
-        root = ET.fromstring(georef)
+        root = defusedxml.ElementTree.fromstring(georef)
         gcpentries = root.findall('./geolocationGrid/gridPoint')
         for gcpentry in gcpentries:
             gcps.append(gdal.GCP(
