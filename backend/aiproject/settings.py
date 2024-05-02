@@ -210,3 +210,4 @@ os.environ["RAMP_HOME"] = RAMP_HOME
 TRAINING_WORKSPACE = env(
     "TRAINING_WORKSPACE", default=os.path.join(os.getcwd(), "training")
 )
+SESSION_COOKIE_SECURE = True
