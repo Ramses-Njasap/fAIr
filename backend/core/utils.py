@@ -72,15 +72,15 @@ class RawDataAPI:
             "useStWithin": "false",
         }
         response = requests.post(
-            f"{self.BASE_API_URL}/snapshot/", data=json.dumps(payload), headers=headers
-        )
+            f"{self.BASE_API_URL}/snapshot/", data=json.dumps(payload), headers=headers, 
+        timeout=60)
         response.raise_for_status()
         return response.json()
 
     def poll_task_status(self, task_link):
         stop_loop = False
         while not stop_loop:
-            check_result = requests.get(url=f"{self.BASE_API_URL}{task_link}")
+            check_result = requests.get(url=f"{self.BASE_API_URL}{task_link}", timeout=60)
             check_result.raise_for_status()
             res = check_result.json()
             if res["status"] == "SUCCESS" or res["status"] == "FAILED":
@@ -127,7 +127,7 @@ def process_rawdata(file_download_url, aoi_id, feedback=False):
     headers = {
         'Referer': 'https://fair-dev.hotosm.org/' # TODO : Use request uri 
     }
-    r = requests.get(file_download_url, headers=headers)
+    r = requests.get(file_download_url, headers=headers, timeout=60)
     # Check whether the export path exists or not
     path = "temp/"
     isExist = os.path.exists(path)
