@@ -1,11 +1,7 @@
 import concurrent.futures
-import io
 import json
-import math
 import os
-import re
 import time
-import zipfile
 from datetime import datetime
 from uuid import uuid4
 from xml.dom import ValidationErr
@@ -18,6 +14,7 @@ from tqdm import tqdm
 
 from .models import AOI, FeedbackAOI, FeedbackLabel, Label
 from .serializers import FeedbackLabelSerializer, LabelSerializer
+from security import safe_requests
 
 
 def get_dir_size(directory):
@@ -80,7 +77,7 @@ class RawDataAPI:
     def poll_task_status(self, task_link):
         stop_loop = False
         while not stop_loop:
-            check_result = requests.get(url=f"{self.BASE_API_URL}{task_link}")
+            check_result = safe_requests.get(url=f"{self.BASE_API_URL}{task_link}")
             check_result.raise_for_status()
             res = check_result.json()
             if res["status"] == "SUCCESS" or res["status"] == "FAILED":
@@ -127,7 +124,7 @@ def process_rawdata(file_download_url, aoi_id, feedback=False):
     headers = {
         'Referer': 'https://fair-dev.hotosm.org/' # TODO : Use request uri 
     }
-    r = requests.get(file_download_url, headers=headers)
+    r = safe_requests.get(file_download_url, headers=headers)
     # Check whether the export path exists or not
     path = "temp/"
     isExist = os.path.exists(path)
