@@ -2,11 +2,11 @@ import os
 from tensorflow import keras
 import torch
 from warnings import warn
-import requests
 import numpy as np
 from tqdm.auto import tqdm
 from ..nets import weights_dir
 from .zoo import model_dict
+from security import safe_requests
 
 
 def get_model(model_name, framework, model_path=None, pretrained=False,
@@ -123,7 +123,7 @@ def _download_weights(model_dict):
     if weight_url is None:
         raise KeyError("Can't find the weights file.")
     else:
-        r = requests.get(weight_url, stream=True)
+        r = safe_requests.get(weight_url, stream=True)
         if r.status_code != 200:
             raise ValueError('The file could not be downloaded. Check the URL'
                              ' and network connections.')
