@@ -5,6 +5,7 @@ import subprocess
 import skimage.io
 from solaris.data import data_dir
 import networkx as nx
+from security import safe_command
 
 
 class TestCLI(object):
@@ -18,7 +19,7 @@ class TestCLI(object):
         if os.path.exists(dest_loc):
             os.remove(dest_loc)
         # run the CLI command
-        subprocess.run('geotransform_footprints -s ' +
+        safe_command.run(subprocess.run, 'geotransform_footprints -s ' +
                        os.path.join(data_dir, 'geotiff_labels.geojson') +
                        ' -r ' +
                        os.path.join(data_dir, 'sample_geotiff.tif') +
@@ -27,7 +28,7 @@ class TestCLI(object):
                        ' -p -d 0',
                        shell=True)
         # compare results
-        subprocess.run('diff ' + os.path.join(data_dir, 'cli_test', 'expected',
+        safe_command.run(subprocess.run, 'diff ' + os.path.join(data_dir, 'cli_test', 'expected',
                                               'gj_to_px_result.geojson') +
                        ' ' + data_dir,
                        shell=True)
@@ -45,7 +46,7 @@ class TestCLI(object):
         if os.path.exists(dest_loc):
             os.remove(dest_loc)
         # run the CLI command
-        subprocess.run('make_graphs -s ' + src_loc + ' -o ' + dest_loc,
+        safe_command.run(subprocess.run, 'make_graphs -s ' + src_loc + ' -o ' + dest_loc,
                        shell=True)
         with open(truth_loc, 'rb') as f:
             truth_graph = pickle.load(f)
@@ -76,7 +77,7 @@ class TestCLI(object):
             if os.path.exists(os.path.join(dest_dir, im_fname)):
                 os.remove(os.path.join(dest_dir, im_fname))
             # run the CLI command
-            subprocess.run(cmd_start + os.path.join(dest_dir, im_fname) + arg,
+            safe_command.run(subprocess.run, cmd_start + os.path.join(dest_dir, im_fname) + arg,
                            shell=True)
             truth_im = skimage.io.imread(os.path.join(expected_dir, im_fname))
             result_im = skimage.io.imread(os.path.join(dest_dir, im_fname))
