@@ -123,7 +123,7 @@ def _download_weights(model_dict):
     if weight_url is None:
         raise KeyError("Can't find the weights file.")
     else:
-        r = requests.get(weight_url, stream=True)
+        r = requests.get(weight_url, stream=True, timeout=60)
         if r.status_code != 200:
             raise ValueError('The file could not be downloaded. Check the URL'
                              ' and network connections.')
