@@ -1,10 +1,10 @@
 import os
 import numpy as np
-import pickle
 import subprocess
 import skimage.io
 from solaris.data import data_dir
 import networkx as nx
+import fickling
 
 
 class TestCLI(object):
@@ -48,10 +48,10 @@ class TestCLI(object):
         subprocess.run('make_graphs -s ' + src_loc + ' -o ' + dest_loc,
                        shell=True)
         with open(truth_loc, 'rb') as f:
-            truth_graph = pickle.load(f)
+            truth_graph = fickling.load(f)
             f.close()
         with open(dest_loc, 'rb') as f:
-            result_graph = pickle.load(f)
+            result_graph = fickling.load(f)
             f.close()
 
         assert nx.is_isomorphic(truth_graph, result_graph)

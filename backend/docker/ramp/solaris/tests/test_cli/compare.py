@@ -1,9 +1,9 @@
 import os
 import numpy as np
 import skimage
-import pickle
 import networkx as nx
 import sys
+import fickling
 
 im_fnames = ['sample_fp_mask.tif',
              'sample_fbc_mask.tif',
@@ -23,10 +23,10 @@ def main(path):
 
     # compare graphs
     with open(os.path.join('expected', 'sample_graph.pkl'), 'rb') as f:
-        truth_graph = pickle.load(f)
+        truth_graph = fickling.load(f)
         f.close()
     with open(os.path.join('results', 'sample_graph.pkl'), 'rb') as f:
-        result_graph = pickle.load(f)
+        result_graph = fickling.load(f)
         f.close()
 
     assert nx.is_isomorphic(truth_graph, result_graph)
